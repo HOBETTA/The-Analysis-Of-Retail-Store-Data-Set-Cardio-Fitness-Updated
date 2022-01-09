@@ -1,0 +1,169 @@
+---
+output:
+  word_document: default
+  pdf_document: default
+  html_document: default
+---
+## The Analysis Of Retail Store Data Set-Cardio Fitness Project
+## By Chinedu H Obetta of Great Learning Academy
+
+***Import and Read the Dataset***
+
+##Setting the working directory and importing dataset
+```{r}
+setwd("C:/Users/CHINEDU/Documents/GREAT LEARNING-UNIVERSITY OF TEXAS")
+library(readr)
+Cardio_Good_Fitness = read.csv("CardioGoodFitness.csv")
+```
+
+##Variable Identification such as the dimension, the names of the columns, the tail and head of the data set and other basic summaries of the data set. 
+
+```{r}
+dim(Cardio_Good_Fitness)
+head(Cardio_Good_Fitness, 10)
+tail(Cardio_Good_Fitness, 10)
+names(Cardio_Good_Fitness)
+```
+##Understanding the structure of the dataset
+```{r}
+str(Cardio_Good_Fitness)
+summary(Cardio_Good_Fitness)
+```
+
+##Analysis of the products. This requires the loading of ggplot2.
+```{r}
+library(ggplot2)
+class(Cardio_Good_Fitness$Product)
+table(Cardio_Good_Fitness$Product)
+```
+
+```{r}
+ggplot(Cardio_Good_Fitness) +
+  aes(x = Product) +
+  geom_bar(position = "dodge", fill = "Blue") +
+  labs(x = "Product Type", y = "Product Count", title = "Univariate Analysis-Cardio Fitness", subtitle = "Product Distribution (3.3a)") +
+  theme_minimal()
+```
+## THE ANALYSIS OF THE CUSTOMER'S AGE
+```{R}
+boxplot(Cardio_Good_Fitness$Age)  #### there exists three outliers
+hist(Cardio_Good_Fitness$Age)
+```
+#ADJUSTING THE OUTLIERS
+```{r}
+AGE<- subset(Cardio_Good_Fitness$Age, Cardio_Good_Fitness$Age< 40)
+summary(AGE)
+hist(AGE)
+```
+
+### CUSTOMER'S YEARS OF EDUCATION
+```{r}
+class(Cardio_Good_Fitness$Education)
+unique(Cardio_Good_Fitness$Education) ## There are 8 unique objects in Education, hence, it should be classified as a factor. 
+
+Cardio_Good_Fitness$Education <- as.factor(Cardio_Good_Fitness$Education)
+ggplot(Cardio_Good_Fitness) +
+  aes(x = Education) +
+  geom_bar(fill = "#0c4c8a") +
+  labs(title = "Univariate Analysis-Cardio Fitness", subtitle = "Years Of Education (3.3c)", caption = "Years Of Education") +
+  theme_minimal()
+```
+
+### Taking a look at Marital Status
+```{r}
+summary(Cardio_Good_Fitness$MaritalStatus)
+plot(Cardio_Good_Fitness$MaritalStatus)
+ggplot(Cardio_Good_Fitness) +
+  aes(x = MaritalStatus) +
+  geom_bar(fill = "#0c4c8a") +
+  labs(title = "Univariate Analysis-Cardio Fitness", subtitle = "Distribution of Marital Status-3.3d", caption = "Distribution of Marital Status") +
+  theme_minimal()
+```
+
+## ANALYSIS OF THE WEEKLY USAGE
+```{r}
+unique(Cardio_Good_Fitness$Usage) ## There are 6 unique categories of usage out of the 180 observations, hence, it is a factor variable.
+Cardio_Good_Fitness$Usage <- as.factor(Cardio_Good_Fitness$Usage)
+
+ggplot(Cardio_Good_Fitness) +
+  aes(x = Usage) +
+  geom_bar(fill = "#0c4c8a") +
+  labs(title = "Univariate Analysis-Cardio Fitness", subtitle = "Weekly Usage-3.3e") +
+  theme_minimal()
+```
+## ANALYSIS OF THE CUSTOMER'S INCOME AND MILES
+```{r}
+hist(Cardio_Good_Fitness$Income)
+hist(Cardio_Good_Fitness$Miles)
+boxplot(Cardio_Good_Fitness$Miles) # to review potential outliers.
+#Removing Outliers
+Miles <- subset(Cardio_Good_Fitness$Miles, Cardio_Good_Fitness$Miles< 120)
+boxplot(Miles)
+hist(Miles)
+```
+## ANALYSIS AND VISUAL DISPLAY OF GENDER
+```{r}
+table(Cardio_Good_Fitness$Gender)
+plot(Cardio_Good_Fitness$Gender)
+```
+## GRAPHICAL ANALYSIS CUSTOMER'S FITNESS
+```{r}
+unique(Cardio_Good_Fitness$Fitness) ### There are 5 categories or levels of fitness, thus, "Fitness" is a factor variable.
+Cardio_Good_Fitness$Fitness <- as.factor(Cardio_Good_Fitness$Fitness)
+ggplot(Cardio_Good_Fitness) +
+  aes(x = Fitness) +
+  geom_bar(fill = "#0c4c8a") +
+  labs(x = "Rating", title = "Univariate Analysis-Cardio Fitness", subtitle = "Fitness - Self Rated Fitness Score") +
+  theme_minimal()
+```
+***BIVARIATE ANALYSIS***
+## THE GRAPHICAL ANALYSIS OF WEEKLY USAGE.OF.MILES_vs_GENDER
+```{r}
+ggplot(Cardio_Good_Fitness) +
+  aes(x = Usage) +
+  geom_bar(fill = "Red") +
+  labs(title = "MILE USAGE_VS_GENDER", caption = "Fig b1") +
+  theme_minimal() +
+  facet_wrap(vars(Gender))
+```
+##THE CHOICE OF THE PRODUCTS BY GENDER
+```{r}
+ggplot(Cardio_Good_Fitness) +
+  aes(x = Product, fill = Gender) +
+  geom_bar() +
+  scale_fill_hue() +
+  labs(title = "THE CHOICE OF THE PRODUCT TYPE BY GENDER", caption = "Fig b2") +
+  theme_minimal() +
+  facet_wrap(vars(Gender))
+```
+##THE EFFECT OF CUSTOMER’S LEVEL OF INCOME 
+```{r}
+ggplot(Cardio_Good_Fitness) +
+  aes(x = Product, y = Income) +
+  geom_boxplot(fill = "#0c4c8a") +
+  labs(x = "Product Type", y = "Income Level", caption = "THE EFFECT OF CUSTOMER’S LEVEL OF INCOME ") +
+  theme_minimal()
+```
+##THE CUSTOMER’S STATE OF FITNESS
+```{r}
+ggplot(Cardio_Good_Fitness) +
+  aes(x = Product, fill = Fitness) +
+  geom_bar() +
+  scale_fill_hue() +
+  labs(x = "Product Type") +
+  theme_minimal() +
+  facet_wrap(vars(Fitness))
+```
+## USAGE BY PRODUCT-----
+```{r}
+ggplot(Cardio_Good_Fitness, aes(x= Usage, fill = Product)) +
+  geom_bar( position = "dodge") +
+  labs(title = "Usage By Products")
+names(Cardio_Good_Fitness)
+```
+## Understanding the relationship between income and gender
+```{r}
+ggplot(Cardio_Good_Fitness, aes(x=Gender, y= Income, color=MaritalStatus)) +
+  geom_boxplot(outlier.shape = NA)+      #### assuming outliers are negligbles
+  labs(title = "Relationship Between Income and Gender")
+````
